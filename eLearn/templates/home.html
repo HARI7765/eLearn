@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Learn Platform</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #000000;
+      color: #ffffff;
+      overflow-x: hidden;
+      cursor: none;
+    }
+    .custom-cursor {
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      background: linear-gradient(135deg, #00ddeb, #f472b6);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.2s ease, background 0.3s ease;
+      box-shadow: 0 0 10px rgba(244, 114, 182, 0.5);
+    }
+    .custom-cursor.trail {
+      opacity: 0.5;
+      transition: all 0.3s ease;
+    }
+    .custom-cursor:hover {
+      transform: scale(1.5);
+      background: linear-gradient(135deg, #ff3e6c, #6b21a8);
+    }
+    .navbar {
+      background: linear-gradient(135deg, #ff3e6c, #6b21a8, #00ddeb);
+      background-size: 200% 200%;
+      animation: wave 10s ease-in-out infinite;
+      padding: 1.2rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      border-radius: 0 0 25px 25px;
+      transform: perspective(1000px) rotateX(0deg);
+      transition: transform 0.3s ease;
+    }
+    .navbar.scrolled {
+      transform: perspective(1000px) rotateX(5deg);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    @keyframes wave {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      font-family: 'Poppins', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      background: linear-gradient(90deg, #fff, #00ddeb);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent !important;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      transform: perspective(500px) translateZ(0);
+    }
+    .navbar-brand:hover {
+      transform: perspective(500px) translateZ(20px);
+      box-shadow: 0 0 15px rgba(0, 221, 235, 0.3);
+    }
+    .logo-icon {
+      width: 30px;
+      height: 30px;
+      margin-right: 0.5rem;
+      transition: transform 0.3s ease;
+    }
+    .navbar-brand:hover .logo-icon {
+      transform: rotateY(360deg);
+    }
+    .nav-item {
+      position: relative;
+    }
+    .nav-link {
+      color: #fff !important;
+      font-size: 1.1rem;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      transition: all 0.3s ease;
+      transform: perspective(500px) translateZ(0);
+    }
+    .nav-link:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: perspective(500px) translateZ(10px);
+    }
+    .dropdown-menu {
+      background: linear-gradient(135deg, #ff3e6c, #6b21a8);
+      border: none;
+      border-radius: 15px;
+      padding: 0.5rem;
+      animation: flipIn 0.5s ease-in-out;
+      transform-origin: top;
+    }
+    .dropdown-item {
+      color: #fff;
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      transition: background 0.3s, transform 0.3s;
+      transform: perspective(500px) translateZ(0);
+    }
+    .dropdown-item:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: perspective(500px) translateZ(5px);
+    }
+    @keyframes flipIn {
+      from { transform: perspective(1000px) rotateX(-90deg); opacity: 0; }
+      to { transform: perspective(1000px) rotateX(0deg); opacity: 1; }
+    }
+    .search-bar {
+      max-width: 280px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50px;
+      padding: 0.3rem 1rem;
+      transition: all 0.3s ease;
+      transform: perspective(500px) translateZ(0);
+    }
+    .search-bar:hover {
+      background: rgba(255, 255, 255, 0.4);
+      transform: perspective(500px) translateZ(10px);
+    }
+    .search-bar input {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 0.9rem;
+    }
+    .search-bar input::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+    .search-bar input:focus {
+      outline: none;
+      box-shadow: none;
+    }
+    .btn-signin {
+      background: linear-gradient(90deg, #ff3e6c, #6b21a8);
+      color: #fff;
+      font-weight: 600;
+      border-radius: 50px;
+      padding: 0.5rem 1.5rem;
+      transition: all 0.3s ease;
+      animation: pulse 2s infinite;
+      transform: perspective(500px) translateZ(0);
+    }
+    .btn-signin:hover {
+      background: linear-gradient(90deg, #ec4899, #5b1a8b);
+      transform: perspective(500px) translateZ(10px);
+    }
+    .navbar-toggler {
+      border: none;
+      padding: 0.5rem;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      transform: perspective(500px) translateZ(0);
+    }
+    .navbar-toggler:hover {
+      transform: perspective(500px) translateZ(5px);
+    }
+    .navbar-toggler-icon {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba%28255, 255, 255, 0.8%29' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+    }
+    .hero {
+      position: relative;
+      background: linear-gradient(135deg, rgba(255, 62, 108, 0.8), rgba(107, 33, 168, 0.8)), url('https://images.unsplash.com/photo-1516321310762-9d9b1c08c0a4') no-repeat center center/cover;
+      color: #fff;
+      padding: 7rem 0;
+      text-align: center;
+      overflow: hidden;
+      transform: perspective(1000px);
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      bottom: -20px;
+      left: 0;
+      width: 100%;
+      height: 80px;
+      background: linear-gradient(to top, #000000, transparent);
+      border-radius: 50% 50% 0 0;
+    }
+    .hero .particle {
+      position: absolute;
+      background: #f472b6;
+      border-radius: 50%;
+      animation: float 15s infinite;
+      transform: perspective(500px) translateZ(20px);
+    }
+    .hero .particle:nth-child(1) { width: 20px; height: 20px; top: 20%; left: 10%; animation-delay: 0s; }
+    .hero .particle:nth-child(2) { width: 15px; height: 15px; top: 50%; left: 80%; animation-delay: 5s; }
+    .hero .particle:nth-child(3) { width: 25px; height: 25px; top: 70%; left: 30%; animation-delay: 10s; }
+    @keyframes float {
+      0% { transform: perspective(500px) translateY(0) translateZ(20px); opacity: 0.5; }
+      50% { transform: perspective(500px) translateY(-50px) translateZ(30px); opacity: 0.2; }
+      100% { transform: perspective(500px) translateY(0) translateZ(20px); opacity: 0.5; }
+    }
+    .hero h1, .hero p, .hero .btn-explore {
+      animation: slideIn3D 1s ease-in-out;
+    }
+    @keyframes slideIn3D {
+      from { opacity: 0; transform: perspective(1000px) translateY(50px) translateZ(-50px); }
+      to { opacity: 1; transform: perspective(1000px) translateY(0) translateZ(0); }
+    }
+    .btn-explore {
+      border-radius: 50px;
+      padding: 0.75rem 2rem;
+      background: linear-gradient(90deg, #ff3e6c, #6b21a8);
+      color: #fff;
+      transition: all 0.3s ease;
+      animation: pulse 2s infinite;
+      transform: perspective(500px) translateZ(0);
+    }
+    .btn-explore:hover {
+      background: linear-gradient(90deg, #ec4899, #5b1a8b);
+      transform: perspective(500px) translateZ(20px);
+    }
+    @keyframes pulse {
+      0% { transform: perspective(500px) scale(1) translateZ(0); }
+      50% { transform: perspective(500px) scale(1.03) translateZ(10px); }
+      100% { transform: perspective(500px) scale(1) translateZ(0); }
+    }
+    .card-3d {
+      background: #1f2937;
+      border-radius: 20px;
+      overflow: hidden;
+      transition: transform 0.5s ease, box-shadow 0.5s ease;
+      margin-bottom: 1.5rem;
+      border: 2px solid transparent;
+      background: linear-gradient(#1f2937, #1f2937) padding-box, linear-gradient(135deg, #ff3e6c, #00ddeb) border-box;
+      transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
+      animation: slideIn3D 0.8s ease-in-out;
+    }
+    .card-3d:hover {
+      transform: perspective(1000px) rotateX(5deg) rotateY(5deg);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 62, 108, 0.3);
+    }
+    .card-3d img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    .card-3d:hover img {
+      transform: scale(1.1);
+    }
+    .card-3d .image-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 220px;
+      background: linear-gradient(transparent, rgba(107, 33, 168, 0.5));
+      pointer-events: none;
+    }
+    .card-3d h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 1rem;
+      color: #ffffff;
+    }
+    .card-3d p {
+      font-size: 0.9rem;
+      color: #d1d5db;
+      margin: 0 1rem 1rem;
+    }
+    .card-3d .btn {
+      border-radius: 50px;
+      margin: 0 1rem 1rem;
+      background: linear-gradient(90deg, #ff3e6c, #6b21a8);
+      border: none;
+      color: #fff;
+      animation: pulse 2s infinite;
+      transform: perspective(500px) translateZ(0);
+    }
+    .card-3d .btn:hover {
+      background: linear-gradient(90deg, #ec4899, #5b1a8b);
+      transform: perspective(500px) translateZ(20px);
+    }
+    .card-3d .badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: #f472b6;
+      color: #fff;
+      border-radius: 10px;
+      padding: 0.3rem 0.6rem;
+      font-size: 0.8rem;
+      transform: perspective(500px) translateZ(20px);
+      transition: transform 0.3s ease;
+    }
+    .card-3d:hover .badge {
+      transform: perspective(500px) translateZ(30px);
+    }
+    .card-3d .price {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #6b21a8;
+      color: #fff;
+      border-radius: 10px;
+      padding: 0.3rem 0.6rem;
+      font-size: 0.8rem;
+      transform: perspective(500px) translateZ(20px);
+      transition: transform 0.3s ease;
+    }
+    .card-3d:hover .price {
+      transform: perspective(500px) translateZ(30px);
+    }
+    .card-3d .rating {
+      margin: 0.5rem 1rem;
+      color: #00ddeb;
+      transform: perspective(500px) translateZ(10px);
+    }
+    .video-card .play-btn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) perspective(500px) translateZ(20px);
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(90deg, #ff3e6c, #6b21a8);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+    .video-card:hover .play-btn {
+      background: linear-gradient(90deg, #ec4899, #5b1a8b);
+      transform: translate(-50%, -50%) perspective(500px) translateZ(40px);
+    }
+    .video-card .play-btn svg {
+      width: 30px;
+      height: 30px;
+      fill: #fff;
+    }
+    .video-card h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 1rem;
+      color: #fff;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+      padding: 0.5rem;
+      transform: perspective(500px) translateZ(10px);
+    }
+    .category-card {
+      padding: 1rem;
+      text-align: center;
+    }
+    .testimonial-card {
+      padding: 1.5rem;
+      text-align: center;
+    }
+    .footer {
+      background: linear-gradient(135deg, #ff3e6c, #6b21a8);
+      color: #fff;
+      padding: 3rem 0;
+      border-radius: 25px 25px 0 0;
+      transform: perspective(1000px) translateZ(0);
+    }
+    .footer a {
+      color: #00ddeb;
+      text-decoration: none;
+      transition: color 0.3s ease, transform 0.3s ease;
+      transform: perspective(500px) translateZ(0);
+    }
+    .footer a:hover {
+      color: #00b7c2;
+      transform: perspective(500px) translateZ(10px);
+    }
+    .section {
+      animation: slideIn3D 0.8s ease-in-out;
+      background: linear-gradient(135deg, #000000, #1f2937);
+    }
+    @media (max-width: 767px) {
+      .navbar-brand {
+        font-size: 1.5rem;
+      }
+      .logo-icon {
+        width: 24px;
+        height: 24px;
+      }
+      .navbar-collapse {
+        background: linear-gradient(135deg, #ff3e6c, #6b21a8, #00ddeb);
+        background-size: 200% 200%;
+        animation: wave 10s ease-in-out infinite;
+        padding: 1.5rem;
+        border-radius: 0 0 20px 20px;
+        transition: all 0.4s ease-in-out;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transform: perspective(1000px) translateZ(0);
+      }
+      .navbar-nav {
+        width: 100%;
+        text-align: center;
+      }
+      .nav-link {
+        margin: 0.5rem 0;
+        animation: slideIn3D 0.3s ease-in-out;
+      }
+      .search-bar {
+        max-width: 100%;
+        margin: 0.5rem 0;
+        border-radius: 50px;
+        background: rgba(255, 255, 255, 0.3);
+        transform: perspective(500px) translateZ(0);
+      }
+      .search-bar:hover {
+        transform: perspective(500px) translateZ(10px);
+      }
+      .btn-signin {
+        width: 100%;
+        max-width: 200px;
+        text-align: center;
+        border-radius: 50px;
+        animation: slideIn3D 0.3s ease-in-out;
+      }
+      .dropdown-menu {
+        background: linear-gradient(135deg, #ff3e6c, #6b21a8);
+        width: 100%;
+        text-align: center;
+      }
+      .hero {
+        padding: 4rem 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Custom Cursor -->
+  <div class="custom-cursor"></div>
+  <div class="custom-cursor trail"></div>
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-md">
+    <div class="container">
+      <a class="navbar-brand" href="#">
+        <svg class="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="#00ddeb"/>
+          <path d="M2 17L12 22L22 17" stroke="#fff" stroke-width="2"/>
+          <path d="M2 12L12 17L22 12" stroke="#fff" stroke-width="2"/>
+        </svg>
+        E-Learn
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto me-3">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="coursesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Courses
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="coursesDropdown">
+              <li><a class="dropdown-item" href="#">Python Programming</a></li>
+              <li><a class="dropdown-item" href="#">Data Science</a></li>
+              <li><a class="dropdown-item" href="#">Web Development</a></li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Programs</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">For Businesses</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">About</a>
+          </li>
+        </ul>
+        <div class="d-flex align-items-center flex-column flex-md-row">
+          <div class="search-bar me-md-3 mb-2 mb-md-0">
+            <input type="text" class="form-control" placeholder="Search courses..." />
+          </div>
+          <a href="#" class="btn btn-signin">Sign In</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero section">
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <h1 class="fs-1 fs-md-2 fs-lg-4" style="background: linear-gradient(90deg, #ff3e6c, #00ddeb); -webkit-background-clip: text; background-clip: text; color: transparent;">Master New Skills with E-Learn</h1>
+          <p class="fs-5 fs-md-6">Explore a world of knowledge with courses designed for every learner.</p>
+          <a href="#" class="btn btn-explore btn-lg mt-3">Start Learning Now</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Course Section -->
+  <section class="py-5 section">
+    <div class="container">
+      <h2 class="text-center mb-4 fs-3" style="background: linear-gradient(90deg, #ff3e6c, #00ddeb); -webkit-background-clip: text; background-clip: text; color: transparent;">Explore Our Courses</h2>
+      <div class="row">
+        <div class="col-md-4 col-sm-6">
+          <div class="card-3d">
+            <img src="https://images.unsplash.com/photo-1516321310762-9d9b1c08c0a4" alt="Python Course">
+            <div class="image-overlay"></div>
+            <span class="badge">Programming</span>
+            <span class="price">$49.99</span>
+            <h3>Python for Beginners</h3>
+            <p>Learn the fundamentals of Python programming from scratch.</p>
+            <div class="rating">★★★★★</div>
+            <a href="#" class="btn btn-primary btn-sm">Enroll Now</a>
+          </div>
+        </div>
+        <div class="col-md-4 col-sm-6">
+          <div class="card-3d">
+            <img src="https://images.unsplash.com/photo-1516321310762-9d9b1c08c0a4" alt="Data Science Course">
+            <div class="image-overlay"></div>
+            <span class="badge">Data Science</span>
+            <span class="price">$79.99</span>
+            <h3>Data Science Essentials</h3>
+            <p>Master data analysis and visualization techniques.</p>
+            <div class="rating">★★★★☆</div>
+            <a href="#" class="btn btn-primary btn-sm">Enroll Now</a>
+          </div>
+        </div>
+        <div class="col-md-4 col-sm-6">
+          <div class="card-3d">
+            <img src="https://images.unsplash.com/photo-1516321310762-9d9b1c08c0a4" alt="Web Dev Course">
+            <div class="image-overlay"></div>
+            <span class="badge">Web Development</span>
+            <span class="price">$99.99</span>
+            <h3>Web Development Bootcamp</h3>
+            <p>Build modern websites with HTML, CSS, and JavaScript.</p>
+            <div class="rating">★★★★★</div>
+            <a href="#" class="btn btn-primary btn-sm">Enroll Now</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Video Section -->
+  <section class="py-5 section">
+    <div class="container">
+      <h2 class="text-center mb-4 fs-3" style="background: linear-gradient(90deg, #ff3e6c, #00ddeb); -webkit-background-clip: text; background-clip: text; color: transparent;">Course Video Previews</h2>
+      <div class="row">
+        <div class="col-md-4 col-sm-6">
+          <div class="card-3d video-card">
+            <img src="https://images.unsplash.com/photo-1516321310762-9d9b1c08c0a4" alt="Python Video">
+            <div class="image-overlay"></div>
+            <span class="badge">Preview</span>
+            <div class="play-btn" data-bs-toggle="modal" data-bs-target="#videoModal">
+              <svg viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            </div>
+            <h3>Python Basics Preview</h3>
+            <div class="rating">★★★★★</div>
+          </div>
+        </div>
+        <div class="col-md-4 col-sm-6">
+          <div class="card-3d video-card">
+            <img src="https://images.unsplash.com/photo-1516321310762-9d9b1c08c0a4" alt="Data Science Video">
+            <div class="image-overlay"></div>
+            <span class="badge">Preview</span>
+            <div class="play-btn" data-bs-toggle="modal" data-bs-target="#videoModal">
+              <svg viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            </div>
+            <h3>Data Science Intro</h3>
+            <div class="rating">★★★★☆</div>
+          </div>
+        </div>
+        <div class="col-md-4 col-sm-6">
+          <div class="card-3d video-card">
+            <img src="https://images.unsplash.com/photo-1516321310762-9d9b1c08c0a4" alt="Web Dev Video">
+            <div class="image-overlay"></div>
+            <span class="badge">Preview</span>
+            <div class="play-btn" data-bs-toggle="modal" data-bs-target="#videoModal">
+              <svg viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            </div>
+            <h3>Web Dev Overview</h3>
+            <div class="rating">★★★★★</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Video Modal -->
+    <div class="modal fade" id="videoModal" tabindex="-1" aria-labelledby="videoModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="border-radius: 15px; border: 2px solid transparent; background: linear-gradient(#1f2937, #1f2937) padding-box, linear-gradient(135deg, #ff3e6c, #00ddeb) border-box; transform: perspective(1000px) translateZ(0);">
+          <div class="modal-header" style="background: #1f2937; color: #fff;">
+            <h5 class="modal-title" id="videoModalLabel">Course Video</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1);"></button>
+          </div>
+          <div class="modal-body" style="background: #1f2937;">
+            <div class="ratio ratio-16x9">
+              <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Course Video" allowfullscreen></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Blog Section -->
+  <section class="py-5 section">
+    <div class="container">
+      <h2 class="text-center mb-4 fs-3" style="background: linear-gradient(90deg, #ff3e6c, #00ddeb); -webkit-background-clip: text; background-clip: text; color: transparent;">Learning Insights</h2>
+      <div class="row">
+        <div class="col-md-4 col-sm-6">
+          <div class="card-3d">
+            <img src="https://images.unsplash.com/photo-1516321310762-9d9b1c08c0a4" alt="Blog 1">
+            <div class="image-overlay"></div>
+            <span class="badge">Blog</span>
+            <h3>Top 5 Programming Languages in 2025</h3>
+            <p>Discover the most in-demand programming languages to learn this year.</p>
+            <div class="rating">★★★★★</div>
+            <a href="#" class="btn btn-primary btn-sm">Read More</a>
+          </div>
+        </div>
+        <div class="col-md-4 col-sm-6">
+          <div class="card-3d">
+            <img src="https://images.unsplash.com/photo-1516321310762-9d9b1c08c0a4" alt="Blog 2">
+            <div class="image-overlay"></div>
+            <span class="badge">Blog</span>
+            <h3>How to Start a Career in Data Science</h3>
+            <p>Learn the steps to break into the exciting field of data science.</p>
+            <div class="rating">★★★★☆</div>
+            <a href="#" class="btn btn-primary btn-sm">Read More</a>
+          </div>
+        </div>
+        <div class="col-md-4 col-sm-6">
+          <div class="card-3d">
+            <img src="https://images.unsplash.com/photo-1516321310762-9d9b1c08c0a4" alt="Blog 3">
+            <div class="image-overlay"></div>
+            <span class="badge">Blog</span>
+            <h3>Mastering Web Development</h3>
+            <p>Tips and tricks to build stunning websites from scratch.</p>
+            <div class="rating">★★★★★</div>
+            <a href="#" class="btn btn-primary btn-sm">Read More</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Categories Section -->
+  <section class="py-5 section">
+    <div class="container">
+      <h2 class="text-center mb-4 fs-3" style="background: linear-gradient(90deg, #ff3e6c, #00ddeb); -webkit-background-clip: text; background-clip: text; color: transparent;">Browse by Category</h2>
+      <div class="row">
+        <div class="col-md-3 col-sm-6">
+          <div class="card-3d category-card">
+            <span class="badge">Featured</span>
+            <h3>Technology</h3>
+            <p>Coding, AI, and more</p>
+            <div class="rating">★★★★★</div>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <div class="card-3d category-card">
+            <span class="badge">Featured</span>
+            <h3>Business</h3>
+            <p>Leadership, Finance</p>
+            <div class="rating">★★★★☆</div>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <div class="card-3d category-card">
+            <span class="badge">Featured</span>
+            <h3>Design</h3>
+            <p>UI/UX, Graphic Design</p>
+            <div class="rating">★★★★★</div>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <div class="card-3d category-card">
+            <span class="badge">Featured</span>
+            <h3>Data Science</h3>
+            <p>Analytics, Machine Learning</p>
+            <div class="rating">★★★★☆</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="py-5 section">
+    <div class="container">
+      <h2 class="text-center mb-4 fs-3" style="background: linear-gradient(90deg, #ff3e6c, #00ddeb); -webkit-background-clip: text; background-clip: text; color: transparent;">What Our Learners Say</h2>
+      <div class="row">
+        <div class="col-md-4 col-sm-6">
+          <div class="card-3d testimonial-card">
+            <span class="badge">Verified</span>
+            <p>"E-Learn transformed my career with their amazing courses!"</p>
+            <h4>Jane Doe</h4>
+            <div class="rating">★★★★★</div>
+          </div>
+        </div>
+        <div class="col-md-4 col-sm-6">
+          <div class="card-3d testimonial-card">
+            <span class="badge">Verified</span>
+            <p>"The video previews helped me choose the perfect course."</p>
+            <h4>John Smith</h4>
+            <div class="rating">★★★★☆</div>
+          </div>
+        </div>
+        <div class="col-md-4 col-sm-6">
+          <div class="card-3d testimonial-card">
+            <span class="badge">Verified</span>
+            <p>"I love the flexibility and quality of the content."</p>
+            <h4>Emily Brown</h4>
+            <div class="rating">★★★★★</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4">
+          <h3 class="fs-4" style="background: linear-gradient(90deg, #fff, #00ddeb); -webkit-background-clip: text; background-clip: text; color: transparent;">E-Learn</h3>
+          <p>Empowering learners worldwide with top-quality education.</p>
+        </div>
+        <div class="col-md-4">
+          <h3 class="fs-5">Quick Links</h3>
+          <ul class="list-unstyled">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Courses</a></li>
+            <li><a href="#">Blogs</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+        <div class="col-md-4">
+          <h3 class="fs-5">Connect</h3>
+          <ul class="list-unstyled">
+            <li><a href="#">Twitter</a></li>
+            <li><a href="#">Facebook</a></li>
+            <li><a href="#">Instagram</a></li>
+            <li><a href="#">Email Us</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <!-- Cursor Animation Script -->
+  <script>
+    const cursor = document.querySelector('.custom-cursor');
+    const trail = document.querySelector('.custom-cursor.trail');
+    let mouseX = 0, mouseY = 0;
+    let cursorX = 0, cursorY = 0;
+    let trailX = 0, trailY = 0;
+
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+
+    function animateCursor() {
+      cursorX += (mouseX - cursorX) * 0.2;
+      cursorY += (mouseY - cursorY) * 0.2;
+      trailX += (mouseX - trailX) * 0.1;
+      trailY += (mouseY - trailY) * 0.1;
+
+      cursor.style.left = cursorX + 'px';
+      cursor.style.top = cursorY + 'px';
+      trail.style.left = trailX + 'px';
+      trail.style.top = trailY + 'px';
+
+      requestAnimationFrame(animateCursor);
+    }
+    animateCursor();
+
+    // Add hover effect
+    document.querySelectorAll('a, button, .card-3d').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+    });
+
+    // Navbar 3D tilt on scroll
+    window.addEventListener('scroll', () => {
+      const navbar = document.querySelector('.navbar');
+      navbar.classList.toggle('scrolled', window.scrollY > 50);
+    });
+  </script>
+</body>
+</html>
