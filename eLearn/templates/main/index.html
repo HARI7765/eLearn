@@ -1,0 +1,176 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eLearn - Learn, Grow, Succeed</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body class="bg-gray-100">
+    <!-- Header -->
+    <header class="bg-white shadow sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="animate-nav-logo">
+                <svg class="logo-svg" width="120" height="40" viewBox="0 0 120 40">
+                    <text x="0" y="30" fill="#2563eb" font-size="28" font-weight="700">eLearn</text>
+                </svg>
+            </div>
+            <div class="space-x-6 flex items-center">
+                <a href="{% url 'index' %}" class="text-gray-600 hover:text-blue-600 animate-nav-link text-lg">Home</a>
+                <a href="{% url 'course_list' %}" class="text-gray-600 hover:text-blue-600 animate-nav-link text-lg">Courses</a>
+                <a href="{% url 'about' %}" class="text-gray-600 hover:text-blue-600 animate-nav-link text-lg">About</a>
+                <a href="{% url 'contact' %}" class="text-gray-600 hover:text-blue-600 animate-nav-link text-lg">Contact</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'progress' %}" class="text-gray-600 hover:text-blue-600 animate-nav-link text-lg">Progress</a>
+                    <a href="{% url 'enrolled_courses' %}" class="text-gray-600 hover:text-blue-600 animate-nav-link text-lg">Enrolled Courses</a>
+                    <a href="{% url 'profile' %}" class="text-gray-600 hover:text-blue-600 animate-nav-link text-lg">Profile</a>
+                    {% if user.is_superuser %}
+                        <a href="{% url 'admin_dashboard' %}" class="text-gray-600 hover:text-blue-600 animate-nav-link text-lg">Admin Dashboard</a>
+                    {% endif %}
+                    <form action="{% url 'logout' %}" method="post" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="bg-blue-600 text-white px-5 py-2 rounded-full hover:bg-blue-700 animate-nav-button text-lg font-semibold">Logout</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}" class="text-gray-600 hover:text-blue-600 animate-nav-link text-lg">Login</a>
+                    <a href="{% url 'signup' %}" class="bg-blue-600 text-white px-5 py-2 rounded-full hover:bg-blue-700 animate-nav-button text-lg font-semibold">Sign Up</a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-bg text-white py-20 relative">
+        <div class="container mx-auto px-6 text-center relative z-10">
+            <h1 class="text-5xl md:text-6xl font-bold mb-4 animate-hero-title">Unlock Your Potential with eLearn</h1>
+            <p class="text-xl md:text-2xl mb-8 animate-hero-subtitle font-light">Learn from industry experts, master new skills, and achieve your goals.</p>
+            <a href="{% url 'course_list' %}" class="bg-white text-blue-600 px-8 py-3 rounded-full font-semibold hover:bg-gray-100 animate-hero-button text-lg">Explore Courses</a>
+        </div>
+        <div class="absolute inset-0 parallax-img" style="background: url('https://via.placeholder.com/1920x600') center/cover no-repeat; opacity: 0.2;"></div>
+    </section>
+
+    <!-- Search Section -->
+    <section class="py-8 bg-white">
+        <div class="container mx-auto px-6">
+            <form method="get" class="flex justify-center">
+                <input type="text" name="q" value="{{ query|default:'' }}" placeholder="Search courses..." class="border p-2 rounded-l-full w-full max-w-md text-lg">
+                <button type="submit" class="bg-blue-600 text-white p-2 rounded-r-full hover:bg-blue-700 font-semibold">Search</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section id="categories" class="py-16 bg-gray-100">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-12 animate-section-title">Categories</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {% for category in categories %}
+                    <div class="course-card bg-white rounded-lg p-6 animate-course-card">
+                        <h3 class="text-2xl font-semibold mb-2">{{ category.name }}</h3>
+                        <ul class="text-gray-600">
+                            {% for course in category.courses.all %}
+                                <li><a href="{% url 'course_detail' course.id %}" class="text-blue-600 hover:underline">{{ course.title }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Courses Section -->
+    <section id="courses" class="py-16 bg-white">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-12 animate-section-title">Featured Courses</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {% for course in courses %}
+                    <div class="course-card bg-gray-50 rounded-lg p-6 animate-course-card">
+                        {% if course.image %}
+                            <img src="{{ course.image.url }}" alt="{{ course.title }}" class="w-full h-40 object-cover rounded-md mb-4 parallax-img">
+                        {% else %}
+                            <img src="https://via.placeholder.com/300x150" alt="{{ course.title }}" class="w-full h-40 object-cover rounded-md mb-4 parallax-img">
+                        {% endif %}
+                        <h3 class="text-2xl font-semibold mb-2">{{ course.title }}</h3>
+                        <p class="text-gray-600 mb-4">{{ course.description|truncatewords:20 }}</p>
+                        <a href="{% url 'course_detail' course.id %}" class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 font-semibold">View Details</a>
+                    </div>
+                {% empty %}
+                    <p class="text-center text-gray-600">No courses found.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-6 text-center">
+            <p>© 2025 eLearn. All rights reserved.</p>
+            <div class="mt-4 space-x-4">
+                <a href="#" class="text-gray-400 hover:text-white">Privacy Policy</a>
+                <a href="#" class="text-gray-400 hover:text-white">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- GSAP Animations -->
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+        gsap.from(".logo-svg text", { opacity: 0, scale: 0.5, duration: 1.5, ease: "elastic.out(1, 0.3)", stagger: 0.1 });
+        gsap.from(".animate-nav-link", { opacity: 0, y: -20, duration: 0.8, stagger: 0.1, ease: "power2.out", delay: 0.5 });
+        gsap.from(".animate-nav-button", { opacity: 0, scale: 0.8, duration: 0.8, delay: 0.9, ease: "back.out(1.7)" });
+        gsap.from(".animate-hero-title", { opacity: 0, y: 100, duration: 1.2, ease: "power3.out" });
+        gsap.from(".animate-hero-subtitle", { opacity: 0, y: 50, duration: 1, delay: 0.3, ease: "power3.out" });
+        gsap.from(".animate-hero-button", { opacity: 0, scale: 0.7, duration: 1, delay: 0.5, ease: "elastic.out(1, 0.5)" });
+        gsap.from(".parallax-img", { yPercent: 20, ease: "none", scrollTrigger: { trigger: "#home", scrub: 1 } });
+        gsap.from(".animate-section-title", { opacity: 0, y: 50, duration: 1, scrollTrigger: { trigger: "#courses", start: "top 80%" } });
+        gsap.from(".animate-course-card", { opacity: 0, y: 80, duration: 1, stagger: 0.2, ease: "power2.out", scrollTrigger: { trigger: "#courses", start: "top 80%" } });
+        gsap.from(".course-card .parallax-img", { yPercent: 10, ease: "none", scrollTrigger: { trigger: "#courses", scrub: 1 } });
+    </script>
+</body>
+</html>
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script>

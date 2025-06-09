@@ -38,13 +38,13 @@
         return gk_fileData[filename] || "";
         }
         </script>
-        <!DOCTYPE html>
 {% load static %}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up - eLearn</title>
+    <title>Courses - eLearn</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
@@ -65,44 +65,49 @@
                 <a href="{% url 'course_list' %}" class="text-gray-600 hover:text-blue-600 animate-nav-link text-lg">Courses</a>
                 <a href="{% url 'about' %}" class="text-gray-600 hover:text-blue-600 animate-nav-link text-lg">About</a>
                 <a href="{% url 'contact' %}" class="text-gray-600 hover:text-blue-600 animate-nav-link text-lg">Contact</a>
-                <a href="{% url 'login' %}" class="text-gray-600 hover:text-blue-600 animate-nav-link text-lg">Login</a>
-                <a href="{% url 'signup' %}" class="bg-blue-600 text-white px-5 py-2 rounded-full hover:bg-blue-700 animate-nav-button text-lg font-semibold">Sign Up</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'progress' %}" class="text-gray-600 hover:text-blue-600 animate-nav-link text-lg">Progress</a>
+                    <a href="{% url 'enrolled_courses' %}" class="text-gray-600 hover:text-blue-600 animate-nav-link text-lg">Enrolled Courses</a>
+                    <a href="{% url 'profile' %}" class="text-gray-600 hover:text-blue-600 animate-nav-link text-lg">Profile</a>
+                    {% if user.is_superuser %}
+                        <a href="{% url 'admin_dashboard' %}" class="text-gray-600 hover:text-blue-600 animate-nav-link text-lg">Admin Dashboard</a>
+                    {% endif %}
+                    <form action="{% url 'logout' %}" method="post" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="bg-blue-600 text-white px-5 py-2 rounded-full hover:bg-blue-700 animate-nav-button text-lg font-semibold">Logout</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}" class="text-gray-600 hover:text-blue-600 animate-nav-link text-lg">Login</a>
+                    <a href="{% url 'signup' %}" class="bg-blue-600 text-white px-5 py-2 rounded-full hover:bg-blue-700 animate-nav-button text-lg font-semibold">Sign Up</a>
+                {% endif %}
             </div>
         </nav>
     </header>
 
-    <!-- Sign Up Section -->
-    <section id="signup" class="py-16 bg-white">
-        <div class="container mx-auto px-6 max-w-md">
-            <h2 class="text-4xl font-bold text-center mb-8 animate-section-title">Sign Up</h2>
-            {% if messages %}
-                <div class="mb-4">
-                    {% for message in messages %}
-                        <p class="text-{{ message.tags }}-600 text-center">{{ message }}</p>
-                    {% endfor %}
-                </div>
-            {% endif %}
-            <form method="post" class="bg-gray-50 rounded-lg p-6 animate-course-card">
-                {% csrf_token %}
-                <div class="mb-4">
-                    <label for="email" class="block text-gray-600 mb-2">Email</label>
-                    <input type="email" id="email" name="email" class="border p-2 rounded-full w-full" required>
-                </div>
-                <div class="mb-4">
-                    <label for="username" class="block text-gray-600 mb-2">Username</label>
-                    <input type="text" id="username" name="username" class="border p-2 rounded-full w-full" required>
-                </div>
-                <div class="mb-4">
-                    <label for="password" class="block text-gray-600 mb-2">Password</label>
-                    <input type="password" id="password" name="password" class="border p-2 rounded-full w-full" required>
-                </div>
-                <div class="mb-4">
-                    <label for="confirmpassword" class="block text-gray-600 mb-2">Confirm Password</label>
-                    <input type="password" id="confirmpassword" name="confirmpassword" class="border p-2 rounded-full w-full" required>
-                </div>
-                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 font-semibold w-full animate-hero-button">Sign Up</button>
+    <!-- Courses Section -->
+    <section id="courses" class="py-16 bg-white">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-12 animate-section-title">All Courses</h2>
+            <form method="get" class="flex justify-center mb-8">
+                <input type="text" name="q" value="{{ query|default:'' }}" placeholder="Search courses..." class="border p-2 rounded-l-full w-full max-w-md text-lg">
+                <button type="submit" class="bg-blue-600 text-white p-2 rounded-r-full hover:bg-blue-700 font-semibold">Search</button>
             </form>
-            <p class="text-center mt-4">Already have an account? <a href="{% url 'login' %}" class="text-blue-600 hover:underline">Login</a></p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {% for course in courses %}
+                    <div class="course-card bg-gray-50 rounded-lg p-6 animate-course-card">
+                        {% if course.image %}
+                            <img src="{{ course.image.url }}" alt="{{ course.title }}" class="w-full h-40 object-cover rounded-md mb-4 parallax-img">
+                        {% else %}
+                            <img src="https://via.placeholder.com/300x150" alt="{{ course.title }}" class="w-full h-40 object-cover rounded-md mb-4 parallax-img">
+                        {% endif %}
+                        <h3 class="text-2xl font-semibold mb-2">{{ course.title }}</h3>
+                        <p class="text-gray-600 mb-4">{{ course.description|truncatewords:20 }}</p>
+                        <a href="{% url 'course_detail' course.id %}" class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 font-semibold">View Details</a>
+                    </div>
+                {% empty %}
+                    <p class="text-center text-gray-600">No courses found.</p>
+                {% endfor %}
+            </div>
         </div>
     </section>
 
@@ -123,9 +128,9 @@
         gsap.from(".logo-svg text", { opacity: 0, scale: 0.5, duration: 1.5, ease: "elastic.out(1, 0.3)", stagger: 0.1 });
         gsap.from(".animate-nav-link", { opacity: 0, y: -20, duration: 0.8, stagger: 0.1, ease: "power2.out", delay: 0.5 });
         gsap.from(".animate-nav-button", { opacity: 0, scale: 0.8, duration: 0.8, delay: 0.9, ease: "back.out(1.7)" });
-        gsap.from(".animate-section-title", { opacity: 0, y: 50, duration: 1, scrollTrigger: { trigger: "#signup", start: "top 80%" } });
-        gsap.from(".animate-course-card", { opacity: 0, y: 80, duration: 1, ease: "power2.out", scrollTrigger: { trigger: "#signup", start: "top 80%" } });
-        gsap.from(".animate-hero-button", { opacity: 0, scale: 0.7, duration: 1, ease: "elastic.out(1, 0.5)", scrollTrigger: { trigger: "#signup", start: "top 80%" } });
+        gsap.from(".animate-section-title", { opacity: 0, y: 50, duration: 1, scrollTrigger: { trigger: "#courses", start: "top 80%" } });
+        gsap.from(".animate-course-card", { opacity: 0, y: 80, duration: 1, stagger: 0.2, ease: "power2.out", scrollTrigger: { trigger: "#courses", start: "top 80%" } });
+        gsap.from(".course-card .parallax-img", { yPercent: 10, ease: "none", scrollTrigger: { trigger: "#courses", scrub: 1 } });
     </script>
 </body>
 </html>

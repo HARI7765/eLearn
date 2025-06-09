@@ -38,13 +38,14 @@
         return gk_fileData[filename] || "";
         }
         </script>
-        <!DOCTYPE html>
+
 {% load static %}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up - eLearn</title>
+    <title>Login - eLearn</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
@@ -71,10 +72,10 @@
         </nav>
     </header>
 
-    <!-- Sign Up Section -->
-    <section id="signup" class="py-16 bg-white">
+    <!-- Login Section -->
+    <section id="login" class="py-16 bg-white">
         <div class="container mx-auto px-6 max-w-md">
-            <h2 class="text-4xl font-bold text-center mb-8 animate-section-title">Sign Up</h2>
+            <h2 class="text-4xl font-bold text-center mb-8 animate-section-title">Login</h2>
             {% if messages %}
                 <div class="mb-4">
                     {% for message in messages %}
@@ -85,10 +86,6 @@
             <form method="post" class="bg-gray-50 rounded-lg p-6 animate-course-card">
                 {% csrf_token %}
                 <div class="mb-4">
-                    <label for="email" class="block text-gray-600 mb-2">Email</label>
-                    <input type="email" id="email" name="email" class="border p-2 rounded-full w-full" required>
-                </div>
-                <div class="mb-4">
                     <label for="username" class="block text-gray-600 mb-2">Username</label>
                     <input type="text" id="username" name="username" class="border p-2 rounded-full w-full" required>
                 </div>
@@ -96,13 +93,9 @@
                     <label for="password" class="block text-gray-600 mb-2">Password</label>
                     <input type="password" id="password" name="password" class="border p-2 rounded-full w-full" required>
                 </div>
-                <div class="mb-4">
-                    <label for="confirmpassword" class="block text-gray-600 mb-2">Confirm Password</label>
-                    <input type="password" id="confirmpassword" name="confirmpassword" class="border p-2 rounded-full w-full" required>
-                </div>
-                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 font-semibold w-full animate-hero-button">Sign Up</button>
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 font-semibold w-full animate-hero-button">Login</button>
             </form>
-            <p class="text-center mt-4">Already have an account? <a href="{% url 'login' %}" class="text-blue-600 hover:underline">Login</a></p>
+            <p class="text-center mt-4">Don't have an account? <a href="{% url 'signup' %}" class="text-blue-600 hover:underline">Sign Up</a></p>
         </div>
     </section>
 
@@ -123,9 +116,9 @@
         gsap.from(".logo-svg text", { opacity: 0, scale: 0.5, duration: 1.5, ease: "elastic.out(1, 0.3)", stagger: 0.1 });
         gsap.from(".animate-nav-link", { opacity: 0, y: -20, duration: 0.8, stagger: 0.1, ease: "power2.out", delay: 0.5 });
         gsap.from(".animate-nav-button", { opacity: 0, scale: 0.8, duration: 0.8, delay: 0.9, ease: "back.out(1.7)" });
-        gsap.from(".animate-section-title", { opacity: 0, y: 50, duration: 1, scrollTrigger: { trigger: "#signup", start: "top 80%" } });
-        gsap.from(".animate-course-card", { opacity: 0, y: 80, duration: 1, ease: "power2.out", scrollTrigger: { trigger: "#signup", start: "top 80%" } });
-        gsap.from(".animate-hero-button", { opacity: 0, scale: 0.7, duration: 1, ease: "elastic.out(1, 0.5)", scrollTrigger: { trigger: "#signup", start: "top 80%" } });
+        gsap.from(".animate-section-title", { opacity: 0, y: 50, duration: 1, scrollTrigger: { trigger: "#login", start: "top 80%" } });
+        gsap.from(".animate-course-card", { opacity: 0, y: 80, duration: 1, ease: "power2.out", scrollTrigger: { trigger: "#login", start: "top 80%" } });
+        gsap.from(".animate-hero-button", { opacity: 0, scale: 0.7, duration: 1, ease: "elastic.out(1, 0.5)", scrollTrigger: { trigger: "#login", start: "top 80%" } });
     </script>
 </body>
 </html>
